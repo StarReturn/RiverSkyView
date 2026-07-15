@@ -59,6 +59,49 @@ pub struct EditorDescriptor {
     pub is_custom: bool,
 }
 
+#[derive(Debug, Clone, Serialize, Deserialize, sqlx::FromRow)]
+pub struct EditorInstallationRecord {
+    pub editor_key: String,
+    pub manual_executable: Option<String>,
+    pub detected_executable: Option<String>,
+    pub active_source: String,
+    pub enabled: bool,
+    pub verification_status: String,
+    pub detected_source: Option<String>,
+    pub version: Option<String>,
+    pub last_detected_at: Option<String>,
+    pub last_verified_at: Option<String>,
+    pub last_error: Option<String>,
+    pub updated_at: String,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct EditorInstallation {
+    pub editor_key: String,
+    pub name: String,
+    pub family: String,
+    pub manual_executable: Option<String>,
+    pub detected_executable: Option<String>,
+    pub active_executable: Option<String>,
+    pub active_source: String,
+    pub available: bool,
+    pub enabled: bool,
+    pub verification_status: String,
+    pub detected_source: Option<String>,
+    pub version: Option<String>,
+    pub last_detected_at: Option<String>,
+    pub last_verified_at: Option<String>,
+    pub last_error: Option<String>,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct EditorTestLaunchResult {
+    pub editor_key: String,
+    pub executable: String,
+    pub success: bool,
+    pub message: String,
+}
+
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct EditorTarget {
     pub relative_path: Option<String>,

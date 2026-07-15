@@ -43,7 +43,7 @@
         <span>{{ appStore.projectCount }} 个项目</span>
         <span v-if="appStore.lastSyncTime">·</span>
         <span v-if="appStore.lastSyncTime">最近同步: {{ appStore.lastSyncTime }}</span>
-        <span style="margin-left: auto; cursor: pointer" @click="goSettings">v1.1.0</span>
+        <span style="margin-left: auto; cursor: pointer" @click="goSettings">v1.1.1</span>
       </footer>
     </div>
   </div>

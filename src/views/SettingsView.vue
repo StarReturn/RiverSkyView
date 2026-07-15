@@ -149,7 +149,7 @@
             <h2>江天一览</h2>
             <p class="brand-en">RiverSkyView</p>
             <p>全域工程可视化工作台</p>
-            <p>版本: 1.1.0</p>
+            <p>版本: 1.1.1</p>
             <p>技术: Tauri 2 + Vue 3 + Rust + SQLite + DPAPI</p>
             <el-divider />
             <el-button @click="viewLogs">查看应用日志目录</el-button>

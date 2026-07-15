@@ -1,4 +1,5 @@
 pub mod editor_detection_service;
+pub mod editor_installation_service;
 pub mod editor_launch_service;
 pub mod editor_target_service;
 pub mod file_service;

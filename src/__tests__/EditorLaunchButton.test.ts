@@ -34,6 +34,7 @@ describe("EditorLaunchButton", () => {
         return Promise.resolve({ default_editor_key: "builtin:vscode", open_mode: "default" });
       }
       if (command === "list_editor_profiles") return Promise.resolve([]);
+      if (command === "list_editor_installations") return Promise.resolve([]);
       if (command === "launch_project_editor") {
         return Promise.resolve({
           editor_key: "builtin:vscode",
@@ -66,4 +67,3 @@ describe("EditorLaunchButton", () => {
     });
   });
 });
-

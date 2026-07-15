@@ -125,7 +125,7 @@ mod tests {
     use tempfile::TempDir;
 
     #[tokio::test]
-    async fn migrations_create_editor_preferences() {
+    async fn migrations_create_editor_preferences_and_installations() {
         let temp = TempDir::new().unwrap();
         let db_path = temp.path().join("migration.db");
         let url = format!(
@@ -141,5 +141,18 @@ mod tests {
         .await
         .unwrap();
         assert_eq!(row.get::<String, _>("name"), "project_editor_preferences");
+        let row = sqlx::query(
+            "SELECT name FROM sqlite_master WHERE type = 'table' AND name = 'editor_installations'",
+        )
+        .fetch_one(&pool)
+        .await
+        .unwrap();
+        assert_eq!(row.get::<String, _>("name"), "editor_installations");
+        let version: String =
+            sqlx::query_scalar("SELECT value FROM app_meta WHERE key = 'schema_version'")
+                .fetch_one(&pool)
+                .await
+                .unwrap();
+        assert_eq!(version, "3");
     }
 }

@@ -112,6 +112,38 @@ export interface EditorDescriptor {
   is_custom: boolean;
 }
 
+export type EditorVerificationStatus =
+  | "unknown"
+  | "valid"
+  | "missing"
+  | "invalid"
+  | "launch_failed";
+
+export interface EditorInstallation {
+  editor_key: string;
+  name: string;
+  family: string;
+  manual_executable: string | null;
+  detected_executable: string | null;
+  active_executable: string | null;
+  active_source: "manual" | "auto";
+  available: boolean;
+  enabled: boolean;
+  verification_status: EditorVerificationStatus;
+  detected_source: string | null;
+  version: string | null;
+  last_detected_at: string | null;
+  last_verified_at: string | null;
+  last_error: string | null;
+}
+
+export interface EditorTestLaunchResult {
+  editor_key: string;
+  executable: string;
+  success: boolean;
+  message: string;
+}
+
 export interface EditorTarget {
   relative_path: string | null;
   display_name: string;

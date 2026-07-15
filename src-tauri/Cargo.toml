@@ -1,6 +1,6 @@
 [package]
 name = "project-manage"
-version = "1.1.0"
+version = "1.1.1"
 description = "江天一览 RiverSkyView 本地项目桌面管理器"
 authors = ["ProjectManage"]
 edition = "2021"

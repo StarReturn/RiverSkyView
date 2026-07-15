@@ -1,10 +1,12 @@
 import { invokeCommand } from "./index";
 import type {
   EditorDescriptor,
+  EditorInstallation,
   EditorProfile,
   EditorProfileInput,
   EditorSettings,
   EditorTarget,
+  EditorTestLaunchResult,
   LaunchEditorRequest,
   LaunchEditorResult,
   ProjectEditorPreference,
@@ -13,8 +15,22 @@ import type {
 export const editorApi = {
   list: (projectId?: string) =>
     invokeCommand<EditorDescriptor[]>("list_editors", { projectId }),
-  refresh: (projectId?: string) =>
-    invokeCommand<EditorDescriptor[]>("refresh_editor_detection", { projectId }),
+  refresh: (projectId?: string, editorKey?: string) =>
+    invokeCommand<EditorDescriptor[]>("refresh_editor_detection", { projectId, editorKey }),
+  listInstallations: () =>
+    invokeCommand<EditorInstallation[]>("list_editor_installations"),
+  setManualExecutable: (editorKey: string, executable: string) =>
+    invokeCommand<EditorInstallation>("set_editor_manual_executable", { editorKey, executable }),
+  clearManualExecutable: (editorKey: string) =>
+    invokeCommand<EditorInstallation>("clear_editor_manual_executable", { editorKey }),
+  verifyExecutable: (editorKey: string, executable?: string) =>
+    invokeCommand<EditorInstallation>("verify_editor_executable", { editorKey, executable }),
+  testLaunch: (editorKey: string) =>
+    invokeCommand<EditorTestLaunchResult>("test_launch_editor", { editorKey }),
+  setEnabled: (editorKey: string, enabled: boolean) =>
+    invokeCommand<EditorInstallation>("set_editor_enabled", { editorKey, enabled }),
+  openLocation: (editorKey: string) =>
+    invokeCommand<void>("open_editor_location", { editorKey }),
   resolveTargets: (projectId: string, editorKey: string) =>
     invokeCommand<EditorTarget[]>("resolve_editor_targets", { projectId, editorKey }),
   launch: (request: LaunchEditorRequest) =>
@@ -39,4 +55,3 @@ export const editorApi = {
   deleteProfile: (id: string) =>
     invokeCommand<void>("delete_editor_profile", { id }),
 };
-

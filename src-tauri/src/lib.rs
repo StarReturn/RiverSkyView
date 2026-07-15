@@ -113,7 +113,14 @@ pub fn run() {
         })
         .invoke_handler(tauri::generate_handler![
             commands::editor::list_editors,
+            commands::editor::list_editor_installations,
             commands::editor::refresh_editor_detection,
+            commands::editor::set_editor_manual_executable,
+            commands::editor::clear_editor_manual_executable,
+            commands::editor::verify_editor_executable,
+            commands::editor::test_launch_editor,
+            commands::editor::set_editor_enabled,
+            commands::editor::open_editor_location,
             commands::editor::resolve_editor_targets,
             commands::editor::get_editor_settings,
             commands::editor::set_editor_settings,

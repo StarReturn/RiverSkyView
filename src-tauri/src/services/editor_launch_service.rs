@@ -68,6 +68,7 @@ impl EditorLaunchService {
         project_root: &Path,
         project_name: &str,
         editor_key: &str,
+        builtin_executable: Option<&Path>,
         target: Option<&Path>,
         open_mode: &str,
         profiles: &[EditorProfile],
@@ -92,9 +93,8 @@ impl EditorLaunchService {
         } else {
             let descriptor = EditorDetectionService::find_builtin(editor_key)
                 .ok_or_else(|| AppError::new(ErrorCode::EditorNotFound, "未知的内置编辑器"))?;
-            let executable = descriptor
-                .executable
-                .map(PathBuf::from)
+            let executable = builtin_executable
+                .map(Path::to_path_buf)
                 .filter(|path| path.is_file())
                 .ok_or_else(|| {
                     AppError::with_details(

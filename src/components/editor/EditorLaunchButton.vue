@@ -19,7 +19,13 @@
               <span class="status-dot" :class="{ available: editor.available }"></span>
               <div class="editor-text">
                 <strong>{{ editor.name }}</strong>
-                <small>{{ editor.available ? (editor.executable || '已检测') : '未检测到' }}</small>
+                <small>
+                  {{
+                    editor.available
+                      ? sourceLabel(editor.source) + ' · ' + (editor.executable || '路径可用')
+                      : (editor.executable ? '路径已失效，请修复' : '未配置，可前往设置手动选择')
+                  }}
+                </small>
               </div>
             </div>
             <div class="editor-actions">
@@ -148,9 +154,16 @@ async function confirmTargetLaunch() {
 }
 
 function handleLaunchError(error: AppError, fallbackEditorKey = "") {
-  if (error.code === "EDITOR_NOT_CONFIGURED" || error.code === "EDITOR_NOT_FOUND") {
+  if (
+    error.code === "EDITOR_NOT_CONFIGURED"
+    || error.code === "EDITOR_NOT_FOUND"
+    || error.code === "EDITOR_EXECUTABLE_MISSING"
+    || error.code === "EDITOR_EXECUTABLE_INVALID"
+    || error.code === "EDITOR_MANUAL_PATH_REQUIRED"
+    || error.code === "EDITOR_INSTALLATION_DISABLED"
+  ) {
     menuVisible.value = true;
-    ElMessage.warning(error.message || "请先选择编辑器");
+    ElMessage.warning(error.message || "请前往设置修复开发工具路径");
     return;
   }
   if (error.code === "EDITOR_SELECTION_REQUIRED") {
@@ -161,6 +174,13 @@ function handleLaunchError(error: AppError, fallbackEditorKey = "") {
     }
   }
   ElMessage.error(error.message || "启动编辑器失败");
+}
+
+function sourceLabel(source: string | null) {
+  if (source === "manual") return "手动指定";
+  if (source === "auto") return "自动检测";
+  if (source === "custom") return "自定义";
+  return "已配置";
 }
 
 function goSettings() {
@@ -253,4 +273,3 @@ onMounted(() => editorStore.load());
   margin: 0;
 }
 </style>
-

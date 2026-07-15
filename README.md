@@ -1,6 +1,6 @@
 # 江天一览 RiverSkyView
 
-> 版本：1.1.0
+> 版本：1.1.1
 > 平台：Windows 10/11 x64
 > 技术：Tauri 2 + Vue 3 + TypeScript + Rust + SQLite + DPAPI
 

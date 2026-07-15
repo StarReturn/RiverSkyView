@@ -9,6 +9,7 @@ use crate::repositories::editor_profile_repository::EditorProfileRepository;
 use crate::repositories::project_repository::ProjectRepository;
 use crate::repositories::settings_repository::SettingsRepository;
 use crate::services::editor_detection_service::EditorDetectionService;
+use crate::services::editor_installation_service::EditorInstallationService;
 use crate::services::editor_launch_service::EditorLaunchService;
 use crate::services::editor_target_service::EditorTargetService;
 use crate::services::project_service::ProjectService;
@@ -19,7 +20,7 @@ pub async fn list_editors(
     state: State<'_, AppState>,
     project_id: Option<String>,
 ) -> AppResult<Vec<EditorDescriptor>> {
-    let mut editors = EditorDetectionService::list_builtins();
+    let mut editors = EditorInstallationService::descriptors(&state.db).await?;
     let profiles = EditorProfileRepository::list(&state.db, project_id.as_deref()).await?;
     editors.extend(
         profiles
@@ -33,8 +34,65 @@ pub async fn list_editors(
 pub async fn refresh_editor_detection(
     state: State<'_, AppState>,
     project_id: Option<String>,
+    editor_key: Option<String>,
 ) -> AppResult<Vec<EditorDescriptor>> {
+    EditorInstallationService::refresh(&state.db, editor_key.as_deref()).await?;
     list_editors(state, project_id).await
+}
+
+#[tauri::command]
+pub async fn list_editor_installations(
+    state: State<'_, AppState>,
+) -> AppResult<Vec<EditorInstallation>> {
+    EditorInstallationService::list(&state.db).await
+}
+
+#[tauri::command]
+pub async fn set_editor_manual_executable(
+    state: State<'_, AppState>,
+    editor_key: String,
+    executable: String,
+) -> AppResult<EditorInstallation> {
+    EditorInstallationService::set_manual(&state.db, &editor_key, &executable).await
+}
+
+#[tauri::command]
+pub async fn clear_editor_manual_executable(
+    state: State<'_, AppState>,
+    editor_key: String,
+) -> AppResult<EditorInstallation> {
+    EditorInstallationService::clear_manual(&state.db, &editor_key).await
+}
+
+#[tauri::command]
+pub async fn verify_editor_executable(
+    state: State<'_, AppState>,
+    editor_key: String,
+    executable: Option<String>,
+) -> AppResult<EditorInstallation> {
+    EditorInstallationService::verify(&state.db, &editor_key, executable.as_deref()).await
+}
+
+#[tauri::command]
+pub async fn test_launch_editor(
+    state: State<'_, AppState>,
+    editor_key: String,
+) -> AppResult<EditorTestLaunchResult> {
+    EditorInstallationService::test_launch(&state.db, &editor_key).await
+}
+
+#[tauri::command]
+pub async fn set_editor_enabled(
+    state: State<'_, AppState>,
+    editor_key: String,
+    enabled: bool,
+) -> AppResult<EditorInstallation> {
+    EditorInstallationService::set_enabled(&state.db, &editor_key, enabled).await
+}
+
+#[tauri::command]
+pub async fn open_editor_location(state: State<'_, AppState>, editor_key: String) -> AppResult<()> {
+    EditorInstallationService::open_location(&state.db, &editor_key).await
 }
 
 #[tauri::command]
@@ -243,10 +301,16 @@ pub async fn launch_project_editor(
 
     let target = EditorTargetService::validate_target(&root, target_relative.as_deref())?;
     let profiles = EditorProfileRepository::list(&state.db, Some(&request.project_id)).await?;
+    let builtin_executable = if editor_key.starts_with("builtin:") {
+        Some(EditorInstallationService::resolve_active(&state.db, &editor_key).await?)
+    } else {
+        None
+    };
     let mut result = EditorLaunchService::launch(
         &root,
         &project.name,
         &editor_key,
+        builtin_executable.as_deref(),
         target.as_deref(),
         &open_mode,
         &profiles,
@@ -274,7 +338,10 @@ async fn ensure_editor_key(
     editor_key: &str,
     project_id: Option<&str>,
 ) -> AppResult<()> {
-    if EditorDetectionService::find_builtin(editor_key).is_some() {
+    if EditorDetectionService::specs()
+        .iter()
+        .any(|spec| spec.key == editor_key)
+    {
         return Ok(());
     }
     let Some(id) = editor_key.strip_prefix("custom:") else {
