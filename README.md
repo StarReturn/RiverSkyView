@@ -103,5 +103,3 @@ status: completed   # completed | failed | blocked
 - 不实时监听项目目录
 - SVG 和远程图片默认不加载
 
-
-- [实施进度](docs/实施进度.md)
