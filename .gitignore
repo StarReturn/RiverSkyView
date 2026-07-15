@@ -1,0 +1,58 @@
+# Dependencies
+node_modules/
+.pnpm-store/
+
+# Build outputs
+dist/
+dist-ssr/
+src-tauri/target/
+src-tauri/target-brand/
+src-tauri/gen/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Environment
+.env
+.env.local
+.env.*.local
+
+# OS
+Thumbs.db
+Desktop.ini
+.DS_Store
+
+# Logs
+*.log
+npm-debug.log*
+pnpm-debug.log*
+
+# Test coverage
+coverage/
+
+# Tauri
+src-tauri/WixTools/
+src-tauri/nsis/
+
+# Application data (local dev)
+*.db
+*.db-shm
+*.db-wal
+
+# Claude Code local settings
+.claude/
+
+# Vault encrypted files (local dev only)
+*.vault
+*.vault.tmp
+*.vault.bak
+*.vault.new
+
+# Tmp working directory
+tmp/
+
+# TypeScript build info
+*.tsbuildinfo
