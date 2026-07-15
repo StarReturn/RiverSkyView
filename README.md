@@ -103,11 +103,5 @@ status: completed   # completed | failed | blocked
 - 不实时监听项目目录
 - SVG 和远程图片默认不加载
 
-## 文档
 
-- [技术方案](docs/技术方案.md)
-- [前端界面设计方案](docs/前端界面设计方案.md)
-- [CLAUDE 实施方案](docs/CLAUDE实施方案.md)
-- [验收测试方案](docs/验收测试方案.md)
-- [品牌资源与 CLI 会话恢复补充方案](docs/品牌资源与CLI会话恢复补充方案.md)
 - [实施进度](docs/实施进度.md)
