@@ -56,3 +56,6 @@ tmp/
 
 # TypeScript build info
 *.tsbuildinfo
+
+# Docs (kept local only, not pushed to remote)
+docs/
